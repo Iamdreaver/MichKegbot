@@ -1,0 +1,4 @@
+include README.md
+include LICENSE.txt
+recursive-include pykeg *.html *.css *.js *.png
+recursive-include deploy *

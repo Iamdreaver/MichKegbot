@@ -1,0 +1,163 @@
+{% extends "skel.html" %}
+{% load kegweblib %}
+{% load humanize %}
+{% if USE_FACEBOOK %}{% load facebook %}{% endif %}
+
+{% block title %}Default Page{% endblock %}
+
+{% block js %}
+{{ block.super }}
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+        var defaultUseMetric = {% if kbsite.settings.display_units != 'metric' %}false{% else %}true{% endif%};
+        {% if kbsite.url %}
+        window.app.setApiBase("/{{ kbsite.url }}/api/");
+        {% else %}
+        window.app.setApiBase("/api/")
+        {% endif %}
+
+        window.app.getPageSettings().setMetric(defaultUseMetric);
+        window.app.getPageSettings().setGuestInfo("{{kbsite.settings.guest_name}}",
+            "{% if kbsite.settings.guest_image %}{{kbsite.settings.guest_image.thumbnail.url}}{% else %}{{STATIC_URL}}images/unknown-drinker.png{% endif %}");
+        $("span.hmeasure").autounits({metric:defaultUseMetric})
+        $("abbr.timeago").timeago();
+        $(".alert").alert()
+        $(".clickable").each(function() {
+          var href = $(this).attr("data-href");
+          $(this).click(function() {
+            window.location = href;
+            return false;
+          });
+        });
+    });
+  </script>
+
+  <style>
+    body {
+  {% if kbsite %}{% if kbsite.settings.background_image %}
+      background-image: url({{kbsite.settings.background_image.image.url}});
+  {% else %}
+      background-image: url({{ STATIC_URL }}images/background.png);
+  {% endif %} {% endif %}
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+  </style>
+
+{% endblock js %}
+
+{% block body %}
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        {% spaceless %}
+        {% if kbsite %}
+        <a class="brand" href="{% url kb-home kbsite.url %}">
+        {% else %}
+        <a class="brand" href="/">
+        {% endif %}
+        {% if kbsite.settings.title %}
+          {{kbsite.settings.title}}
+        {% else %}
+          kegbot beer device
+        {% endif %}
+        </a>{% endspaceless %}
+
+        <ul class="nav">
+          {% if kbsite %}
+          {% navitem kb-kegs "Kegs" %}
+          {% navitem kb-stats "Stats" %}
+          {% if user.is_authenticated %}{% navitem kb-account-main "Account" %}{% endif %}
+          {% if user.is_staff %}
+          <li class="dropdown">
+            <a  href="#" class="dropdown-toggle" data-toggle="dropdown">Admin
+              <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              {% include "kegadmin/nav-items.html" %}
+            </ul>
+          </li>
+          {% endif %}
+          {% endif %}
+        </ul>
+
+        {% if not user.is_authenticated %}
+        <ul class="nav pull-right">
+          {% if kbsite.settings.registration_allowed %}
+          <li><a href="{% url registration_register %}"><i class="icon-edit icon-white"></i> New Drinker</a></li>
+          {% endif %}
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> Sign In <b class="caret"></b></a>
+            <ul class="dropdown-menu" style="padding: 15px;">
+              <form action="/accounts/login/" method="POST">
+                {% csrf_token %}
+                {% with login_form as form %}
+                  {% for hidden in form.hidden_fields %}
+                  {{ hidden }}
+                  {% endfor %}
+                {% endwith %}
+                <input class="span2" name="username" type="text" placeholder="Username" >
+                <input class="span2" name="password" type="password" placeholder="Password">
+                <button class="btn" type="submit">Log In <i class="icon-ok"></i></button>
+              </form>
+            </ul>
+          </li>
+        </ul>
+        {% else %}
+        <ul class="nav pull-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> {{ user.username}} <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="{% url django.contrib.auth.views.logout %}">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+        {% endif %}
+
+      </div>
+    </div>
+  </div> <!-- /.navbar -->
+
+  <div class="container">
+    <div class="row">
+      <div class="span12">
+        {% block header-margin %}
+        <div class="page-header">
+          <h1>{% block pagetitle %}{% endblock %}</h1>
+          {% block breadcrumbs %}{% endblock %}
+          {% block messages %}
+          {% for message in messages %}
+            <div class="alert {{message.tags}}">
+              <a class="close" data-dismiss="alert" href="#">×</a>
+              <p>
+                {{message}}
+              </p>
+            </div>
+          {% endfor %}
+          {% endblock messages %}
+        </div>
+        {% endblock %}
+
+        <div id="content">
+        {% block content %}{% endblock %}
+        {% block extra-content %}{% endblock %}
+        </div>
+      </div> <!-- /span9 -->
+
+    </div> <!-- /row -->
+    <footer>
+      <p>
+        <small>
+        this site is powered by <a href="http://kegbot.org/">kegbot</a>:
+        &copy; 2003-{% now "Y" %} mike wakerly<br/>
+
+        <a href='#' onClick='window.app.get("pageSettings").toggleMetric();'>Toggle Units</a>
+        <span id="page-settings"></span> |
+        charts by <a href="http://highcharts.com/" target="_blank">highcharts</a>
+        </small>
+      </p>
+    </footer>
+  </div> <!-- /container -->
+{% endblock body %}
+

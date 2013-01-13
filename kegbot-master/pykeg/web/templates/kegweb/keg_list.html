@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load kegweblib %}
+{% block title %}keg list{% endblock %}
+{% block pagetitle %}keg list{% endblock %}
+
+{% block content %}
+
+{% for keg in keg_list %}
+  <div class="row">
+    <div class="span10">
+      {% include "kegweb/keg-snapshot.html" %}
+    </div>
+  </div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "page-twocol.html" %}
+{% load kegweblib %}
+
+{% block title %}drink {{ drink.seqn }} by {{ drink.user.username }}{% endblock %}
+{% block pagetitle %}drink {{ drink.seqn }} by {{ drink.user.username }}{% endblock %}
+
+{% if drink.user %}
+{% block sidebar %}
+  <div class="well">
+    {% mugshot_box drink.user %}
+  </div>
+{% endblock sidebar %}
+{% endif %}
+
+{% block col-1 %}
+<div class="row">
+  <div class="span8">
+    <h2>Summary</h2>
+    <table class="condensed-table">
+    <tbody>
+      <tr>
+        <th>Size</th>
+        <td>{% volume drink.volume_ml %}</td>
+      </tr>
+
+      <tr>
+        <th>When</th>
+        <td>
+           {% timeago drink.time %}
+           {% if drink.duration %}
+           (took {{drink.duration}} second{{drink.duration|pluralize}} to pour)
+           {% endif %}
+        </td>
+      </tr>
+
+      {% if drink.keg %}
+      <tr>
+        <th>Keg</th>
+        <td>
+          <a href="{% url kb-keg kbsite.url drink.keg.seqn %}">{{drink.keg.type.name}}</a>
+        </td>
+      </tr>
+      {% endif %}
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class="span8">
+  <h2>This Session</h2>
+  {% with drink.session as session %}
+    {% include "kegweb/keg-session.html" %}
+  {% endwith %}
+  </div>
+</div>
+
+{% endblock col-1 %}
+
+{% block col-2 %}
+{% with drink.pictures.all as pictures %}
+{% if pictures.count %}
+<h2>Beer Goggles!</h2>
+{% include "kegweb/picture-gallery.html" %}
+{% endif %}
+{% endwith %}
+{% endblock col-2 %}

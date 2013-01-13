@@ -1,0 +1,63 @@
+{% extends "page-twocol.html" %}
+{% load icanhaz %}
+{% load kegweblib %}
+
+{% block title %}main page{% endblock %}
+
+{% block kb-extrajs %}
+{% icanhaz "systemevent" %}
+{% icanhaz "systemevent_drink_poured" %}
+{% icanhaz "systemevent_list" %}
+{% icanhaz "systemevent_keg_started" %}
+{% icanhaz "systemevent_keg_ended" %}
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+      // Bootstrap recent drinking sessions.
+      window.app.drinkingSessions.add({{initial_sessions|safe}});
+
+      // Bootstrap recent system events.
+      window.app.systemEvents.add({{initial_events|safe}});
+
+      // Start polling refresh loop.
+      window.app.refresh();
+
+    });
+  </script>
+{% endblock %}
+
+{% block col-1 %}
+  {% for tap in taps %}
+    {% if tap.current_keg %}
+      {% with tap.current_keg as keg %}
+        {% include "kegweb/keg-snapshot.html" %}
+      {% endwith %}
+    {% endif %}
+  {% endfor %}
+
+  {% if current_session %}
+    <p>
+      {% with current_session as session %}
+        {% include "kegweb/keg-session.html" %}
+      {% endwith %}
+    </p>
+  {% endif %}
+
+  {% with recent_images as pictures %}
+  {% if pictures.count %}
+  <h2>Recent Pictures</h2>
+    <div class="well">
+    {% include "kegweb/picture-gallery.html" %}
+    </div>
+  {% endif %}
+  {% endwith %}
+{% endblock col-1 %}
+
+{% block col-2 %}
+<div class="kb-contentbox">
+  <h2>Recent Activity</h2>
+  <div id="kb-system-events">
+  </div>
+</div>
+
+{% endblock col-2 %}

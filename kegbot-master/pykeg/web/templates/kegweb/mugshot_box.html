@@ -1,0 +1,29 @@
+{% spaceless %}
+<div>
+{% with user.get_profile as profile %}
+
+{% if user %}
+  <a href="{% url kb-drinker kbsite.url user.username %}">
+{% endif %}
+
+  <img
+    {% if boxsize %}
+      style="width:{{boxsize}}px; height:{{boxsize}}px"
+    {% else %}
+      style="width:100%;"
+    {% endif %}
+{% if user and profile.mugshot %}
+      src="{{ profile.mugshot.thumbnail.url }}"
+{% else %}
+  {% if guest_info.image %}
+      src="{{ guest_info.image.thumbnail.url }}"
+  {% else %}
+      src="{{STATIC_URL}}images/unknown-drinker.png"
+  {% endif %}
+{% endif %}
+    />
+  </a>
+{% endwith %}
+
+</div>
+{% endspaceless %}

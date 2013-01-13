@@ -1,0 +1,26 @@
+{% load kegweblib %}
+<div class="session-snapshot clickable" id="session-snapshot-{{session.seqn}}"
+    data-href="{{session.get_absolute_url}}">
+  <h3>
+    {{ session.GetTitle }}
+  </h3>
+
+  {% if session.GetStats.total_volume_ml %}
+  <span class="label">{% volume session.GetStats.total_volume_ml %}</span>
+  {% endif %}
+
+  <span class="smalltext">
+    &middot;
+    <span style="text-transform: uppercase;">{% timeago session.start_time %}</span>
+    &middot;
+    {{session.summarize_drinkers|safe}}
+  </span>
+
+  <ul class="avatar-list">
+    {% for chunk in session.UserChunksByVolume %}
+      {% if chunk.user %}
+        <li>{% mugshot_box chunk.user 64 %}</li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</div>

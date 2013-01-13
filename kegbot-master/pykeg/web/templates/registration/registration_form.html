@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load kegweblib %}
+{% load crispy_forms_tags %}
+
+{% block title %}registration{% endblock %}
+{% block pagetitle %}New Drinker{% endblock %}
+
+{% block content %}
+<div class="well">
+  <form action="/accounts/register/" method="POST">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-success small"
+        name="tweet-form-submit">Register</button>
+  </form>
+</div>
+
+{% endblock %}
