@@ -1,0 +1,16 @@
+distribute_setup.py
+setup.py
+bin/kegboard-monitor.py
+bin/kegboard-tester.py
+kegbot/__init__.py
+kegbot/kegboard/__init__.py
+kegbot/kegboard/crc16.py
+kegbot/kegboard/crc16_test.py
+kegbot/kegboard/kegboard.py
+kegbot/kegboard/kegboard_test.py
+kegbot_kegboard.egg-info/PKG-INFO
+kegbot_kegboard.egg-info/SOURCES.txt
+kegbot_kegboard.egg-info/dependency_links.txt
+kegbot_kegboard.egg-info/namespace_packages.txt
+kegbot_kegboard.egg-info/requires.txt
+kegbot_kegboard.egg-info/top_level.txt

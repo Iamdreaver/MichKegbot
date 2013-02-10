@@ -1,0 +1,12 @@
+Metadata-Version: 1.0
+Name: kegbot
+Version: 0.9.7
+Summary: Kegbot Beer Kegerator Server package.
+Home-page: http://kegbot.org/
+Author: mike wakerly
+Author-email: opensource@hoho.com
+License: UNKNOWN
+Description: Kegbot is a hardware and software system to record and monitor access to a beer
+        kegerator.  For more information and documentation, see http://kegbot.org/
+        
+Platform: UNKNOWN

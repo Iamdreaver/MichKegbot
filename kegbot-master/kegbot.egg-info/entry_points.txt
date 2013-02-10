@@ -1,0 +1,3 @@
+[console_scripts]
+instance = django.core.management:execute_manager
+
